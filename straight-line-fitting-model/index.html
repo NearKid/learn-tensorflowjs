@@ -1,0 +1,38 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>标题</title>
+  <style>
+    input {
+      width: 60px;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>直线拟合</h3>
+  <p>拟合直线 y = a*x + b</p>
+  <p>
+    y = <input type="number" id="a" value="0.8" /> * x + <input type="number" id="b" value="30" />
+  </p>
+  <p>
+    随机点个数：<input type="number" id="randomNumberCount" value="300">
+  </p>
+  <p>
+    迭代次数：<input type="number" id="numIterations" value="75" />
+  </p>
+  <p>
+    sigma：<input type="number" id="sigma" value="20" />
+  </p>
+  <p>
+    <button id="btn">开始</button>
+  </p>
+  <ul>
+    <li>红点：训练后的预测结果</li>
+  </ul>
+  <canvas id="canvas" width="800" height="800"></canvas>
+  <script src="./index.js"></script>
+</body>
+
+</html>
