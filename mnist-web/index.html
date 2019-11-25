@@ -1,0 +1,39 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>标题</title>
+  <style>
+    input[type="number"] {
+      width: 60px;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>识别手写数字</h3>
+  <p>
+    <button id="btnLoad">加载数据</button>
+    加载状态：<span id="loadStatus">未加载</span>
+  </p>
+  <p>
+    <input type="number" value="0" id="startIndex" />
+    <button id="btnShow">显示训练数据</button>
+  </p>
+  <p id="canvasContainer"></p>
+  <p>
+    <button id="btnTrain">开始训练</button>
+    训练状态：<span id="trainStatus">未训练</span>；
+    batch：<span id="batch"></span>；
+    epoch：<span id="epoch"></span>
+  </p>
+  <p>
+    <button id="saveModel">保存模型</button>
+  </p>
+  <p>
+    <input type="file" id="file" >
+  </p>
+  <script src="./index.js"></script>
+</body>
+
+</html>

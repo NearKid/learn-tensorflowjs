@@ -1,4 +1,4 @@
-import run from './run.js';
+import MyModel from './my-model.js';
 
 window.onload = function () {
   let aDom = document.getElementById('a');
@@ -7,8 +7,12 @@ window.onload = function () {
   let numIterationsDom = document.getElementById('numIterations');
   const sigmaDom = document.getElementById('sigma');
   let btn = document.getElementById('btn');
+  let btnSave = document.getElementById('btnSave');
+
   let canClick = true;
   let ctx = document.getElementById('canvas').getContext('2d');
+
+  const myModel = new MyModel(ctx);
 
   btn.onclick = async function () {
     if (!canClick) {
@@ -20,8 +24,13 @@ window.onload = function () {
     let numIterations = +numIterationsDom.value;
     let sigma = +sigmaDom.value;
     canClick = false;
-    await run(a, b, randomNumberCount, numIterations, sigma, ctx);
+    await myModel.train(a, b, randomNumberCount, numIterations, sigma);
+    await myModel.predict();
     canClick = true;
+  }
+
+  btnSave.onclick = function () {
+    myModel.save();
   }
 
 };
