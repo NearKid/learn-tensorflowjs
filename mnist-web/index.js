@@ -71,7 +71,7 @@ function train(model, trainData) {
   const epochDom = document.getElementById('epoch');
 
   let batchCount = 0;
-  let batchTotalCount = Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / batchSize) * TRAIN_EPOCHS;
+  let batchTotalCount = Math.ceil(trainData.xs.shape[0] * (1 - validationSplit) / BATCH_SIZE) * TRAIN_EPOCHS;
 
 
   return model.fit(trainData.xs, trainData.labels, {
@@ -81,8 +81,8 @@ function train(model, trainData) {
     validationSplit,
     callbacks: {
       async onBatchEnd(batch1, { acc, batch, loss, size }) {
-        batchDom.innerText = `${(batchCount / batchTotalCount * 100).toFixed(1)}%`;
         batchCount++;
+        batchDom.innerText = `${(batchCount / batchTotalCount * 100).toFixed(1)}%`;
         await tf.nextFrame();
       },
       async onEpochEnd(epoch, { acc, loss }) {
@@ -93,25 +93,24 @@ function train(model, trainData) {
   });
 }
 
-function getGrayScaleData(file) {
+function getGrayScaleData(img) {
+  let canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  let ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+
+  let imgData = ctx.getImageData(0, 0, img.width, img.height);
+  return imgData;
+}
+
+function getImageByFile(file) {
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
     reader.onload = function (e) {
       let img = new Image();
       img.onload = function () {
-        let canvas = document.createElement('canvas');
-        canvas.width = this.width;
-        canvas.height = this.height;
-        let ctx = canvas.getContext('2d');
-        ctx.drawImage(this, 0, 0);
-
-        let imgData = ctx.getImageData(0, 0, this.width, this.height);
-        resolve(imgData);
-        // for (let i = 0, len = imgData.data.length; i < len; i += 4) {
-        //   let d = (imgData.data[i] * 299 + imgData.data[i + 1] * 587 + imgData.data[i + 2] * 114) / 1000;
-        //   data.push(d);
-        // }
-        // resolve(data);
+        resolve(this);
       }
       img.src = e.target.result;
     };
@@ -123,6 +122,7 @@ window.onload = async function () {
   const data = new MnistData();
 
   let fileElem = document.getElementById('file');
+  let imgList = document.getElementById('imgList');
 
   const btnLoad = document.getElementById('btnLoad');
   const btnTrain = document.getElementById('btnTrain');
@@ -148,15 +148,15 @@ window.onload = async function () {
     hasLoadData = true;
     loadStatus.innerText = '加载完成';
     trainData = data.getTrainData();
-    console.log(trainData)
     btnShow.innerText = '显示训练数据：' + trainData.xs.shape[0] + '中的10个';
   }
 
   // 显示图片数据
   btnShow.onclick = async function () {
     if (hasLoadData) {
-      let startIndex = document.getElementById('startIndex').value;
-      let d = await trainData.xs.slice([+startIndex], [10]).array();
+      let startIndex = parseInt(document.getElementById('startIndex').value);
+      let d = await trainData.xs.slice([startIndex], [10]).array();
+      let y = await trainData.labels.slice([startIndex], [10]).array();
       let f = document.createDocumentFragment();
       for (let k = 0; k < 10; k++) {
         let canvas = document.createElement('canvas');
@@ -177,7 +177,20 @@ window.onload = async function () {
           }
         }
         ctx.putImageData(imgData, 0, 0);
-        f.appendChild(canvas);
+        let index = 0;
+        for (let i = 0; i < 10; i++) {
+          if (y[k][i] === 1) {
+            index = i;
+            break;
+          }
+        }
+        let div = document.createElement('div');
+        div.className = 'item';
+        let span = document.createElement('span');
+        span.innerText = index;
+        div.appendChild(canvas);
+        div.appendChild(span);
+        f.appendChild(div);
       }
       document.getElementById('canvasContainer').appendChild(f);
     }
@@ -192,6 +205,9 @@ window.onload = async function () {
     hasTrained = false;
 
     await train(model, trainData);
+    // 使用原有的测试数据也进行训练
+    // const testData = data.getTestData();
+    // await train(model, testData);
 
     hasTrained = true;
     trainStatus.innerText = '训练完成';
@@ -206,22 +222,37 @@ window.onload = async function () {
 
   // 选择文件
   fileElem.onchange = async function () {
-    if (hasTrained) {
-      let file = this.files[0];
+    let file = this.files[0];
 
-      let d = await getGrayScaleData(file);
-      tf.tidy(() => {
-        let t = tf.tensor(new Uint8Array(d.data), [d.height, d.width, 4]);
-        let img = t.split([3, 1], -1)[0];
-        let nimg = tf.image.resizeBilinear(img.expandDims(0), [28, 28]);
-        let [a, b, c] = nimg.split([1, 1, 1], 3);
-        let gray = a.mul(0.299).add(b.mul(0.587)).add(c.mul(0.114));
-        console.log(gray);
-        let res = model.predict(gray);
-      });
+    let img = await getImageByFile(file);
+    let d = getGrayScaleData(img);
+    let predictResult = tf.tidy(() => {
+      let t = tf.tensor(new Uint8Array(d.data), [d.height, d.width, 4]);
+      let img = t.split([3, 1], -1)[0];
+      let nimg = tf.image.resizeBilinear(img.expandDims(0), [28, 28]);
+      let [a, b, c] = nimg.split([1, 1, 1], 3);
+      let gray = a.mul(0.299).add(b.mul(0.587)).add(c.mul(0.114));
+      let res = model.predict(gray);
+      return res;
+    });
+
+    let data = await predictResult.data();
+    let result = 0;
+    console.log(data);
+    for (let i = 0; i < 10; i++) {
+      if (data[i] === 1) {
+        result = i;
+        break;
+      }
     }
-
     this.value = '';
+    let item = document.createElement('div');
+    item.className = 'img-item';
+    item.appendChild(img);
+    let span = document.createElement('span');
+    span.innerText = result;
+    item.appendChild(span);
+    imgList.appendChild(item);
   }
 
 }

@@ -185,7 +185,7 @@ export class MnistData {
     let labels = tf.tensor2d(
       this.testLabels, [this.testLabels.length / NUM_CLASSES, NUM_CLASSES]);
 
-    if (numExamples != null) {
+    if (numExamples) {
       xs = xs.slice([0, 0, 0, 0], [numExamples, IMAGE_H, IMAGE_W, 1]);
       labels = labels.slice([0, 0], [numExamples, NUM_CLASSES]);
     }

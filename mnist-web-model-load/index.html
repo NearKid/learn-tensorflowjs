@@ -7,14 +7,34 @@
     input[type="number"] {
       width: 60px;
     }
+
+    .img-item {
+      width: 28px;
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+      align-items: center;
+    }
+
+    .img-item img {
+      max-width: 100%;
+    }
+
+    #imgList {
+      display: flex;
+      flex-direction: row;
+    }
   </style>
 </head>
 
 <body>
   <h3>识别手写数字</h3>
   <p>
-    <input type="file" id="file" >
+    <input type="file" id="file">
   </p>
+  <div id="imgList">
+
+  </div>
   <script src="./index.js"></script>
 </body>
 
