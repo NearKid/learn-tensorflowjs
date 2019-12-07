@@ -1,6 +1,6 @@
 # learn-tensorflowjs
 
-本人也是tensorflowjs的初学者，这是自己写的一些tensorflowjs的一些例子，希望能帮助到你们
+本人也是tensorflowjs的初学者，这是自己写的一些tensorflowjs的一些例子，希望能帮助到你们，学习者可按下面表格的顺序进行学习
 
 文件夹 | 描述
 -------|-------
@@ -10,3 +10,4 @@ straight-line-fitting-model | 通过定义模型的方式，传入训练的数�
 straight-line-fitting-model-load | 加载已经训练好的模型，输入点进行预测
 mnist-web | tensorflowjs官方的例子，按照理解，使用他的数据源训练模型，并保存
 mnist-web-model-load | 使用上一步训练的模型预测结果
+polynomial-web | 使用变量的方式进行曲线拟合，使用echarts绘制图表数据

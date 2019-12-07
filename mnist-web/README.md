@@ -1,4 +1,4 @@
-# tensorflowjs例子：直线拟合
+# tensorflowjs例子：识别手写数字
 
 使用tensorflowjs识别手写数字
 
