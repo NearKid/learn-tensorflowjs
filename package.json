@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NearKid/learn-tensorflowjs.git"
+    "url": "git+https://github.com/luch1994/learn-tensorflowjs.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NearKid/learn-tensorflowjs/issues"
+    "url": "https://github.com/luch1994/learn-tensorflowjs/issues"
   },
-  "homepage": "https://github.com/NearKid/learn-tensorflowjs#readme"
+  "homepage": "https://github.com/luch1994/learn-tensorflowjs#readme"
 }
