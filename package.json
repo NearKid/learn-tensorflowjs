@@ -1,7 +1,7 @@
 {
   "name": "learn-tensorflowjs",
   "version": "1.0.0",
-  "description": "学习tensorflowjs的一些记录",
+  "description": "本人也是tensorflowjs的初学者，主要记录自己学习的过程，如果帮助到了你，可以给个赞",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/luch1994/learn-tensorflowjs/issues"
   },
-  "homepage": "https://github.com/luch1994/learn-tensorflowjs#readme"
+  "homepage": "https://github.com/luch1994/learn-tensorflowjs#readme",
+  "dependencies": {
+    "@tensorflow/tfjs": "^2.0.0"
+  }
 }
